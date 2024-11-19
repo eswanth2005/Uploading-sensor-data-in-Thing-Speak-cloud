@@ -1,17 +1,18 @@
 # Uploading temperature sensor data in Thing Speak cloud
 
-# AIM:
+## AIM:
 To monitor the temperature sensor data in the Thing speak using an ESP32 controller.
 
-# Apparatus required:
+## Apparatus required:
 ESP32 Controller  </br>
 Temperature Sensor </br>
 Power supply </br>
 Connecting wires </br>
 Bread board </br>
 
-# PROCEDURE:
-## Arduino IDE
+## PROCEDURE:
+### Arduino IDE
+
 Step1:Open the Arduino IDE </br>
 Step2: Go to sketch- include library – manage libraries file and install esp32 and thing speak library file </br>
 Step3:Go to file and select new file option </br>
@@ -26,7 +27,7 @@ Step11. Upload the program in the esp32. </br>
 Step12 Press the boot button in ESP32 and then press and release the reset button after release the boot button </br>
 Step13 Check the output in the cloud </br>
 
-## Thingspeak
+### Thingspeak
 
 Step1 Create a ThingSpeak Account </br>
 Step2 Log in to your ThingSpeak account </br>
@@ -36,7 +37,7 @@ Step5 Copy the Channel ID and API key in the thingspeak and update in the progra
 Step6 Execute your program to send the sensor value to ThingSpeak </br>
 Step7 Check your ThingSpeak channel to verify that the sensor value has been updated </br>
 
-# THEORY:
+## THEORY:
 
 ### What is IoT?
 
@@ -70,13 +71,57 @@ Automatically act on your data and communicate using third-party services like T
 ![image](https://user-images.githubusercontent.com/71547910/235334056-3ba9579f-2f62-43b1-a714-8fde6cf9ef32.png)
 
 
-# PROGRAM:
+## PROGRAM:
+```
+#include <WiFi.h>
+#include <WiFiClient.h>;
+#include <ThingSpeak.h>;
+const char* ssid = "OPPO A77s"; //Your Network SSID
+const char* password = "yuva2004"; //Your Network Password
+int val;
+#include <DHT.h>
+#define DHT11PIN 23
+#define DHTTYPE DHT11
+DHT dht(DHT11PIN, DHTTYPE);
+float h,tc ;
+WiFiClient client;
+unsigned long myChannelNumber = 2744293; //Your Channel Number (Without Brackets)
+//unsigned long myChannelField = 1870717; // Channel ID
+//const int ChannelField = 1; // Which channel to write data
+const char * myWriteAPIKey = "FH5LBAWMTG9NBUS0"; // Your write API Key
+void setup()
+{
+   Serial.begin(115200);
+   delay(10); // Connect to WiFi network
+   WiFi.begin(ssid, password);
+   ThingSpeak.begin(client);
+   dht.begin();
+   delay(1000);
+   Serial.println("DHT11 Temperature and Humidity ");
+}
+void loop()
+{
+  h = dht.readHumidity();
+  tc = dht.readTemperature();
+  Serial.print('\n');
+  Serial.print("Humidity = ");
+  Serial.print(h);
+  Serial.print("%,  ");
+  Serial.print("Temperature = ");
+  Serial.print(tc);
+  Serial.print("°C, "); 
+ThingSpeak.writeField(myChannelNumber, 1,h, myWriteAPIKey); //Update in ThingSpeak
+ThingSpeak.writeField(myChannelNumber, 2,tc, myWriteAPIKey); //Update in ThingSpeak
+delay(100);
+}
+```
 
-# CIRCUIT DIAGRAM:
+## CIRCUIT DIAGRAM:
+![WhatsApp Image 2024-11-15 at 19 50 27_0c2c0b13](https://github.com/user-attachments/assets/4a3427ce-6af9-4cc5-b455-46862a7bcf86)
 
 # OUTPUT:
+![{2A1A897B-E5DB-419C-BBB3-38B873B5D8DF}](https://github.com/user-attachments/assets/27c6303f-fbd4-41ee-adfd-ea20b02daa07)
 
 # RESULT:
-
-Thus the temperature sensor values are updated in the Thing speak using ESP32 controller.
+Thus, the temperature sensor values are updated in the Thing speak using ESP32 controller.
 
